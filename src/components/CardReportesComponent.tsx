@@ -1,27 +1,37 @@
 import React from 'react';
-import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { StyleSheet, Text, useWindowDimensions, View, ScrollView } from 'react-native';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 
+interface Props {
+    codigo: number,
+    descripcion: string,
+    urlFoto: string
+}
 
 
-export const CardReportesComponent = () => {
+export const CardReportesComponent = ({codigo, descripcion, urlFoto}: Props) => {
 
+    //DIMENSIONES DE PANTALLA (NO LO USO AÚN)
     const { width, height } = useWindowDimensions();
 
     return (
         <>
             <Card style={{marginTop: 6}}>
                 <Card.Content style={styles.cardContent}>
-                    <Title>Reporte # 12345</Title>
+                    <Title>Reporte # {codigo}</Title>
 
                     <View style={styles.contenido}>
                         <View style={styles.contenedorDescripcion}>
                             <Text style={styles.tituloDescripcion}>Descripción:</Text>
-                            <Paragraph style={styles.parrafoDescripcion}>Card content</Paragraph>
+                            <ScrollView>
+                                <Paragraph style={styles.parrafoDescripcion}>{descripcion}</Paragraph>
+                            </ScrollView>
                         </View>
 
                         <View style={styles.imagenBton} >
-                            <Card.Cover style={styles.imagen} source={{ uri: 'https://picsum.photos/720' }} />
+                            {/* <Card.Cover style={styles.imagen} source={{ uri: 'https://picsum.photos/721' }} /> */}
+                            <Card.Cover style={styles.imagen} source={{ uri: 'file:///data/user/0/com.ludyreportmovil/cache/Camera/d6f0d78f-9e5f-4008-8169-649b9e5ba3c2.jpg' }} />
+                            <Card.Cover style={styles.imagen} source={{ uri: `${urlFoto}` }} />
                             <View style={styles.botonEditar}>
                                 <Button  icon="circle-edit-outline" mode="contained" onPress={() => console.log('Pressed')}>
     

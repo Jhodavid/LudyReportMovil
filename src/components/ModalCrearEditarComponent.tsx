@@ -1,22 +1,21 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 
 import { StyleSheet, Text, View } from 'react-native';
 import { TextInput, Modal, Button, Dialog, Paragraph } from 'react-native-paper';
 import { Portal } from 'react-native-paper';
+import { SQLiteContext } from '../context/SQLiteContext';
 
 import { CameraComponent } from './CameraComponent';
 
-
-// import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 interface Props {
     visible: boolean,
     onDismiss: () => void;
 }
 
-export const ModalCrearEditarComponent = ({ visible, onDismiss }: Props) => {
 
+export const ModalCrearEditarComponent = ({ visible, onDismiss }: Props) => {
 
     const containerStyle: any = {
         backgroundColor: 'white',
@@ -26,17 +25,26 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss }: Props) => {
         borderRadius: 10
     };
 
-    // const cameraPermission = async () => (await Camera.getCameraPermissionStatus());
-
     const [visibleD, setVisible] = React.useState(false);
+    const showDialog = () => setVisible(true);
+    const hideDialog = () => setVisible(false);
 
-  const showDialog = () => setVisible(true);
+    const {crearTabla, getReportes, addReporte, setDescripcion, setUrlFoto}: any = useContext(SQLiteContext);
 
-  const hideDialog = () => setVisible(false);
+    const enviarYCerrar = () => {
+        onDismiss();
+        addReporte();
+    }
+
+    useEffect(() => {
+        const effectReportes = async () => {
+            await crearTabla();
+            await getReportes();
+        }
+        effectReportes();
+    }, [])
 
     return (
-
-        
 
         <Portal>
             <Modal visible={visible} onDismiss={onDismiss} contentContainerStyle={containerStyle}>
@@ -54,7 +62,8 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss }: Props) => {
                         multiline
                         style={styles.textArea}
                         mode="outlined"
-                        placeholder="Por asignación automática"
+                        placeholder="Descripción del reporte..."
+                        onChangeText={setDescripcion}
                     />
                 </View>
                 <View style={styles.containerFoto}>
@@ -67,7 +76,7 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss }: Props) => {
                         <Button style={[styles.btnS, styles.btnSCancelar]} mode="contained" onPress={onDismiss}>
                             Cancelar
                         </Button>
-                        <Button style={[styles.btnS, styles.btnSCrearEditar]} mode="contained" onPress={() => console.log('Pressed')}>
+                        <Button style={[styles.btnS, styles.btnSCrearEditar]} mode="contained" onPress={() => enviarYCerrar()}>
                             Crear
                         </Button>
                     </View>
@@ -76,11 +85,12 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss }: Props) => {
             </Modal>
 
             <Dialog style={styles.camaraDialog} visible={visibleD} onDismiss={hideDialog}>
-                <CameraComponent/>
+                <CameraComponent
+                    hideDialog={hideDialog}
+                    setUrlFoto={setUrlFoto}
+                />
             </Dialog>
         </Portal>
-
-
     )
 }
 
@@ -135,7 +145,6 @@ const styles = StyleSheet.create({
     btnS: {
         width: '45%',
         marginHorizontal: '2.5%',
-        
     },
     btnSCancelar: {
         backgroundColor: '#e42b2b'
@@ -145,6 +154,9 @@ const styles = StyleSheet.create({
     },
     camaraDialog: {
         flex: 1,
-        width: '82%'
+        width: '80%',
+        marginHorizontal: '10%',
+        borderRadius: 5,
+
     }
 });
