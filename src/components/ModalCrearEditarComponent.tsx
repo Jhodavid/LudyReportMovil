@@ -1,22 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react';
 
-
 import { StyleSheet, Text, View } from 'react-native';
-import { TextInput, Modal, Button, Dialog, Paragraph } from 'react-native-paper';
+import { TextInput, Modal, Button, Dialog } from 'react-native-paper';
 import { Portal } from 'react-native-paper';
 import { SQLiteContext } from '../context/SQLiteContext';
 
 import { CameraComponent } from './CameraComponent';
 
-
 interface Props {
     visible: boolean,
     onDismiss: () => void;
-    editar_Eliminar: any
+    editar_Crear: any
 }
 
 
-export const ModalCrearEditarComponent = ({ visible, onDismiss, editar_Eliminar }: Props) => {
+export const ModalCrearEditarComponent = ({ visible, onDismiss, editar_Crear }: Props) => {
 
     const containerStyle: any = {
         backgroundColor: 'white',
@@ -32,12 +30,14 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss, editar_Eliminar 
 
     const { addReporte, updateReporte, reporteStateModal }: any = useContext(SQLiteContext);
 
-    const [descripcion, setDescripcion] = useState("");
-    const [urlFoto, setUrlFoto] = useState("");
+    const [descripcion, setDescripcion] = useState(reporteStateModal.descripcion);
+    const [urlFoto, setUrlFoto] = useState(reporteStateModal.urlfoto);
 
     const enviarYCerrar = () => {
-        onDismiss();
-        addReporte(descripcion, urlFoto);
+        if (descripcion != null && urlFoto != null) {
+            onDismiss();
+            addReporte(descripcion, urlFoto);
+        }
     }
 
     const EditarYCerrar = () => {
@@ -45,6 +45,11 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss, editar_Eliminar 
         updateReporte(reporteStateModal.codigo, descripcion, urlFoto);
         onDismiss();
     }
+
+    useEffect(() => {
+        setDescripcion(reporteStateModal.descripcion)
+        setUrlFoto(reporteStateModal.urlfoto)
+    }, [reporteStateModal])
 
     return (
         <Portal>
@@ -56,7 +61,7 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss, editar_Eliminar 
                         style={styles.textField}
                         mode="outlined"
                         placeholder="Por asignación automática"
-                        value={editar_Eliminar ? reporteStateModal.codigo.toString() : ""}
+                        value={editar_Crear ? reporteStateModal.codigo.toString() : ""}
                         disabled={true}
                     />
                     <Text style={styles.titulosI}>Descripción:</Text>
@@ -66,7 +71,7 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss, editar_Eliminar 
                         mode="outlined"
                         placeholder="Descripción del reporte..."
                         onChangeText={setDescripcion}
-                        value={editar_Eliminar ? reporteStateModal.descripcion : null}
+                        value={editar_Crear ? descripcion : null}
                     />
                 </View>
                 <View style={styles.containerFoto}>
@@ -79,7 +84,7 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss, editar_Eliminar 
                         <Button style={[styles.btnS, styles.btnSCancelar]} mode="contained" onPress={onDismiss}>
                             Cancelar
                         </Button>
-                        {editar_Eliminar
+                        {editar_Crear
                             ? <Button style={[styles.btnS, styles.btnSCrearEditar]} mode="contained" onPress={() => EditarYCerrar()}>
                                 Editar
                             </Button>

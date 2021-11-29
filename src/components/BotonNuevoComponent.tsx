@@ -1,12 +1,12 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { Button } from 'react-native-paper';
 
 interface Props {
     onPress: () => void;
 }
 
-export const BotonNuevoComponent = ({onPress}: Props) => {
+export const BotonNuevoComponent = ({ onPress }: Props) => {
     return (
         <View style={styles.fabLocation}>
             <Button style={styles.boton} icon="bookmark-plus-outline" mode="contained" onPress={onPress}>

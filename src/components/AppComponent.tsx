@@ -1,22 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 
 import {
-  SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
   Image,
-  useWindowDimensions,
-  TouchableOpacity
+  TouchableOpacity,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 import { Card, Dialog, Paragraph, Portal, Provider, Button } from 'react-native-paper';
 
 import { BotonNuevoComponent } from './BotonNuevoComponent';
-import { CardReportesComponent } from './CardReportesComponent';
 import { ModalCrearEditarComponent } from './ModalCrearEditarComponent';
 
 
@@ -27,7 +23,7 @@ import { ListaCardsComponent } from './ListaCardsComponent';
 export const AppComponent = () => {
 
   const [urlFotoDialog, GuardarUrlFotoDialog] = useState('');
-  const { crearTabla, getReportes, addReporte, setDescripcion, setUrlFoto, reportes, removeReporte, guardarCodigoStateModal, guardarDescripcionStateModal, guardarUrlFotoStateModal }: any = useContext(SQLiteContext);
+  const { removeReporte }: any = useContext(SQLiteContext);
 
 
   // MODAL EDITAR CREAR
@@ -53,16 +49,16 @@ export const AppComponent = () => {
     hideDialogEditarEliminar();
   }
 
-  const [editar_Eliminar, guardarEditar_Eliminar] = useState(false);
+  const [editar_Crear, guardarEditar_Crear] = useState(false);
 
   const BotonEditar = () => {
-    guardarEditar_Eliminar(true);
+    guardarEditar_Crear(true);
     hideDialogEditarEliminar();
     showModal();
   }
 
   const BotonCrear = () => {
-    guardarEditar_Eliminar(false);
+    guardarEditar_Crear(false);
     showModal();
   }
 
@@ -88,7 +84,7 @@ export const AppComponent = () => {
         </View>
       </ScrollView>
 
-      <ModalCrearEditarComponent visible={visible} onDismiss={hideModal} editar_Eliminar={editar_Eliminar} />
+      <ModalCrearEditarComponent visible={visible} onDismiss={hideModal} editar_Crear={editar_Crear} />
 
       <BotonNuevoComponent onPress={BotonCrear} />
 
@@ -103,9 +99,12 @@ export const AppComponent = () => {
           <Dialog.Title>Opciones</Dialog.Title>
           <Dialog.Content>
             <Paragraph style={{ fontSize: 16 }}>¿Qué desea realizar?</Paragraph>
+            <Paragraph style={{ fontSize: 11, color: 'red' }}>Mantén presionado para elíminar*</Paragraph>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button style={[styles.btnS, styles.btnSEliminar]} mode="contained" onLongPress={BotonEliminar}>Eliminar</Button>
+            <TouchableWithoutFeedback style={[styles.btnS, styles.btnSEliminar]} onLongPress={BotonEliminar}>
+              <Button style={[styles.btnS, styles.btnSEliminar]} mode="contained" >Eliminar</Button>
+            </TouchableWithoutFeedback>
             <Button style={[styles.btnS, styles.btnSEditar]} mode="contained" onPress={BotonEditar}>Editar</Button>
           </Dialog.Actions>
         </Dialog>

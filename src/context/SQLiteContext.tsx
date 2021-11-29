@@ -1,7 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import { Alert, StyleSheet } from "react-native";
-import { Dialog, Paragraph, Portal } from "react-native-paper";
-// import axios from 'axios';
+import { StyleSheet } from "react-native";
 import { openDatabase } from 'react-native-sqlite-storage';
 
 export const SQLiteContext = createContext(undefined);
@@ -17,7 +15,7 @@ const db = openDatabase({
 export const SQLiteProvider = (props: any) => {
 
   // STATE PASAR DATOS ENTRE MODALES
-  const [reporteStateModal, guardarReporteStateModal] = useState(null);
+  const [reporteStateModal, guardarReporteStateModal] = useState('');
 
   const [codigo, setCodigo] = useState(null);
   const [descripcion, setDescripcion] = useState("");

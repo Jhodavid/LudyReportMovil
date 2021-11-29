@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { StyleSheet, Text, useWindowDimensions, View, ScrollView, TouchableOpacity, Touchable, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
-import { Avatar, Button, Card, Title, Paragraph, Portal, Modal, Provider, Dialog } from 'react-native-paper';
+import { StyleSheet, Text, useWindowDimensions, View, ScrollView, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { Button, Card, Title, Paragraph, Provider } from 'react-native-paper';
 import { SQLiteContext } from '../context/SQLiteContext';
 
 interface Props {

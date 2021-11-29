@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { FlatList, TouchableOpacity, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { View } from 'react-native';
 import { SQLiteContext } from '../context/SQLiteContext';
 import { CardReportesComponent } from './CardReportesComponent';
 
