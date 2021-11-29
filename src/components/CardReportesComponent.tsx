@@ -1,50 +1,59 @@
 import React from 'react';
-import { StyleSheet, Text, useWindowDimensions, View, ScrollView } from 'react-native';
-import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
+import { StyleSheet, Text, useWindowDimensions, View, ScrollView, TouchableOpacity } from 'react-native';
+import { Avatar, Button, Card, Title, Paragraph, Portal, Modal, Provider, Dialog } from 'react-native-paper';
 
 interface Props {
     codigo: number,
     descripcion: string,
-    urlFoto: string
+    urlFoto: string,
+    showDialog: () => void
+    GuardarUrlFotoDialog: any
 }
 
 
-export const CardReportesComponent = ({codigo, descripcion, urlFoto}: Props) => {
+
+export const CardReportesComponent = ({ codigo, descripcion, urlFoto, showDialog, GuardarUrlFotoDialog }: Props) => {
 
     //DIMENSIONES DE PANTALLA (NO LO USO AÚN)
     const { width, height } = useWindowDimensions();
 
+    const AsignarUrlFotoYMostrar = () => {
+        GuardarUrlFotoDialog(urlFoto);
+        showDialog();
+    }
+
     return (
         <>
-            <Card style={{marginTop: 6}}>
-                <Card.Content style={styles.cardContent}>
-                    <Title>Reporte # {codigo}</Title>
+            <Provider>
+                <Card style={{ marginTop: 6 }}>
+                    <Card.Content style={styles.cardContent}>
+                        <Title>Reporte # {codigo}</Title>
 
-                    <View style={styles.contenido}>
-                        <View style={styles.contenedorDescripcion}>
-                            <Text style={styles.tituloDescripcion}>Descripción:</Text>
-                            <ScrollView>
-                                <Paragraph style={styles.parrafoDescripcion}>{descripcion}</Paragraph>
-                            </ScrollView>
-                        </View>
-
-                        <View style={styles.imagenBton} >
-                            {/* <Card.Cover style={styles.imagen} source={{ uri: 'https://picsum.photos/721' }} /> */}
-                            <Card.Cover style={styles.imagen} source={{ uri: 'file:///data/user/0/com.ludyreportmovil/cache/Camera/d6f0d78f-9e5f-4008-8169-649b9e5ba3c2.jpg' }} />
-                            <Card.Cover style={styles.imagen} source={{ uri: `${urlFoto}` }} />
-                            <View style={styles.botonEditar}>
-                                <Button  icon="circle-edit-outline" mode="contained" onPress={() => console.log('Pressed')}>
-    
-                                </Button>
+                        <View style={styles.contenido}>
+                            <View style={styles.contenedorDescripcion}>
+                                <Text style={styles.tituloDescripcion}>Descripción:</Text>
+                                <ScrollView>
+                                    <Paragraph style={styles.parrafoDescripcion}>{descripcion}</Paragraph>
+                                </ScrollView>
                             </View>
+
+                            <View style={styles.imagenBton} >
+                                <TouchableOpacity onPress={AsignarUrlFotoYMostrar}>
+                                    <Card.Cover style={styles.imagen} source={{ uri: `${urlFoto}` }} />
+                                </TouchableOpacity>
+                                <View style={styles.botonEditar}>
+                                    <Button icon="circle-edit-outline" mode="contained" onPress={() => console.log('Pressed')}>
+
+                                    </Button>
+                                </View>
+                            </View>
+
                         </View>
+                    </Card.Content>
+                </Card>
 
-                    </View>
-                </Card.Content>
-            </Card>
+            </Provider>
         </>
-
-
     )
 }
 
@@ -72,7 +81,7 @@ const styles = StyleSheet.create({
     parrafoDescripcion: {
         marginTop: 5,
     },
-    imagenBton:{
+    imagenBton: {
         width: '29%',
     },
     imagen: {

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import {
   SafeAreaView,
@@ -14,7 +14,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 
-import { Dialog, Provider } from 'react-native-paper';
+import { Card, Dialog, Paragraph, Portal, Provider } from 'react-native-paper';
 
 import { BotonNuevoComponent } from './BotonNuevoComponent';
 import { CardReportesComponent } from './CardReportesComponent';
@@ -22,6 +22,7 @@ import { ModalCrearEditarComponent } from './ModalCrearEditarComponent';
 
 
 import { SQLiteContext } from '../context/SQLiteContext';
+import { ListaCardsComponent } from './ListaCardsComponent';
 
 
 export const AppComponent = () => {
@@ -30,39 +31,14 @@ export const AppComponent = () => {
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
+  const [urlFotoDialog, GuardarUrlFotoDialog] = useState('');
+
   const { crearTabla, getReportes, addReporte, setDescripcion, setUrlFoto, reportes }: any = useContext(SQLiteContext);
 
-  // useEffect(() => {
-  //   const effectReportes = async () => {
-  //       await crearTabla();
-  //       await getReportes();
-  //   }
-  //   effectReportes();
-  // }, [])
 
-  // const TodosLosReportes = () => {
-  //     reportes.map((reporte: any) => {
-  //       return (
-  //         <CardReportesComponent
-  //           key={reporte.codigo}
-  //           descripcion={reporte.descripcion}
-  //           urlFoto={reporte.urlfoto}
-  //         />
-  //       )
-  //     }
-  // }
-
-  console.log(reportes);
-
-  // let TodosLosReportes = reportes.map((reporte: any, reporte.codigo) => {
-  //     return (
-        // <CardReportesComponent
-        //   key={reporte.codigo}
-        //   descripcion={reporte.descripcion}
-        //   urlFoto={reporte.urlfoto}
-        // />
-  //     )
-  // })
+  const [visibleD, setVisibleD] = React.useState(false);
+  const showDialog = () => setVisibleD(true);
+  const hideDialog = () => setVisibleD(false);
 
 
   return (
@@ -76,15 +52,10 @@ export const AppComponent = () => {
       <ScrollView>
         <View style={styles.contenedor}>
 
-          {reportes.map((reporte: any) => (
-                <CardReportesComponent
-                  key={reporte.codigo}
-                  codigo={reporte.codigo}
-                  descripcion={reporte.descripcion}
-                  urlFoto={reporte.urlfoto}
-                />
-          ))}
-          {/* {TodosLosReportes} */}
+          <ListaCardsComponent
+            showDialog={showDialog}
+            GuardarUrlFotoDialog={GuardarUrlFotoDialog}
+          />
 
         </View>
       </ScrollView>
@@ -92,6 +63,12 @@ export const AppComponent = () => {
       <ModalCrearEditarComponent visible={visible} onDismiss={hideModal} />
 
       <BotonNuevoComponent onPress={showModal} />
+
+      <Portal>
+        <Dialog style={styles.contenedorFoto} visible={visibleD} onDismiss={hideDialog}>
+            <Card.Cover style={styles.foto} source={{ uri: `${urlFotoDialog}` }} />
+        </Dialog>
+      </Portal>
 
     </Provider>
   )
@@ -121,6 +98,15 @@ const styles = StyleSheet.create({
     width: '15%',
     left: '4%'
   },
+  foto: {
+    height: '100%',
+    margin: 0
+  },
+  contenedorFoto: {
+    flex: 1,
+    padding: 0,
+    margin: 0
+  }
 
 });
 

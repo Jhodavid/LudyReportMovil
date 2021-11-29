@@ -36,14 +36,6 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss }: Props) => {
         addReporte();
     }
 
-    useEffect(() => {
-        const effectReportes = async () => {
-            await crearTabla();
-            await getReportes();
-        }
-        effectReportes();
-    }, [])
-
     return (
 
         <Portal>

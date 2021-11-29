@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
-import { Alert } from "react-native";
+import { Alert, StyleSheet } from "react-native";
+import { Dialog, Paragraph, Portal } from "react-native-paper";
 // import axios from 'axios';
 import { openDatabase } from 'react-native-sqlite-storage';
 
@@ -58,6 +59,13 @@ export const SQLiteProvider = (props: any) => {
         });
       };
 
+      useEffect(() => {
+        const effectReportes = async () => {
+            await crearTabla();
+            await getReportes();
+        }
+        effectReportes();
+    }, [])
 
       const getReportes = () => {
         db.transaction(txn => {
@@ -76,12 +84,13 @@ export const SQLiteProvider = (props: any) => {
                 }
                 setReportes(results);
 
-                console.log("reportes");
+                // console.log("reportes");
 
-                reportes.forEach(reporte => {
-                    console.log("Codigo: "+reporte.codigo+" Descripcion: "+reporte.descripcion+" urlFoto: "+reporte.urlfoto);
-                });
+                // reportes.forEach(reporte => {
+                //     console.log("Codigo: "+reporte.codigo+" Descripcion: "+reporte.descripcion+" urlFoto: "+reporte.urlfoto);
+                // });
               }
+              console.log("No hay nada");
             },
             error => {
               console.log("error on getting reportes " + error.message);
@@ -89,10 +98,6 @@ export const SQLiteProvider = (props: any) => {
           );
         });
       };
-
-
-
-      
 
     return (
         <SQLiteContext.Provider
@@ -109,3 +114,12 @@ export const SQLiteProvider = (props: any) => {
         </SQLiteContext.Provider>
     )
 }
+
+
+const styles = StyleSheet.create({
+    dialogFoto: {
+        flex: 1,
+        position: 'relative',
+        // width: `${width}`
+    }
+});
