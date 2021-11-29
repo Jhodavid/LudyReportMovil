@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { openDatabase } from 'react-native-sqlite-storage';
+import RNFS from 'react-native-fs';
 
 export const SQLiteContext = createContext(undefined);
 
@@ -96,6 +97,15 @@ export const SQLiteProvider = (props: any) => {
 
           ///////////////
           //ELIMINAR FOTO /// REQUIERE METODO PARA ELIMINAR AL EDITA O CREAR
+          RNFS.unlink(urlFoto)
+            .then(() => {
+              console.log('FILE DELETED');
+            })
+            // `unlink` will throw an error, if the item to unlink does not exist
+            .catch((err) => {
+              console.log(err.message);
+            });
+
           ///////////////
 
           console.log("No hay nada");
