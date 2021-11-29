@@ -10,11 +10,10 @@ import {
   View,
   Image,
   useWindowDimensions,
-  Button,
   TouchableOpacity
 } from 'react-native';
 
-import { Card, Dialog, Paragraph, Portal, Provider } from 'react-native-paper';
+import { Card, Dialog, Paragraph, Portal, Provider, Button } from 'react-native-paper';
 
 import { BotonNuevoComponent } from './BotonNuevoComponent';
 import { CardReportesComponent } from './CardReportesComponent';
@@ -27,19 +26,45 @@ import { ListaCardsComponent } from './ListaCardsComponent';
 
 export const AppComponent = () => {
 
+  const [urlFotoDialog, GuardarUrlFotoDialog] = useState('');
+  const { crearTabla, getReportes, addReporte, setDescripcion, setUrlFoto, reportes, removeReporte, guardarCodigoStateModal, guardarDescripcionStateModal, guardarUrlFotoStateModal }: any = useContext(SQLiteContext);
+
+
+  // MODAL EDITAR CREAR
   const [visible, setVisible] = React.useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
-  const [urlFotoDialog, GuardarUrlFotoDialog] = useState('');
-
-  const { crearTabla, getReportes, addReporte, setDescripcion, setUrlFoto, reportes }: any = useContext(SQLiteContext);
-
-
+  // DIALOGO PARA VER FOTOS
   const [visibleD, setVisibleD] = React.useState(false);
   const showDialog = () => setVisibleD(true);
   const hideDialog = () => setVisibleD(false);
 
+  // DIALOGO PARA EDITAR ELIMNAR
+  const [visibleEditarEliminar, setVisibleEditarEliminar] = React.useState(false);
+  const showDialogEditarEliminar = () => setVisibleEditarEliminar(true);
+  const hideDialogEditarEliminar = () => setVisibleEditarEliminar(false);
+
+  const [codigoEliminar, guardarCodigoEliminar] = useState();
+  const [urlEliminar, guardarUrlEliminar] = useState();
+
+  const BotonEliminar = () => {
+    removeReporte(codigoEliminar, urlEliminar);
+    hideDialogEditarEliminar();
+  }
+
+  const [editar_Eliminar, guardarEditar_Eliminar] = useState(false);
+
+  const BotonEditar = () => {
+    guardarEditar_Eliminar(true);
+    hideDialogEditarEliminar();
+    showModal();
+  }
+
+  const BotonCrear = () => {
+    guardarEditar_Eliminar(false);
+    showModal();
+  }
 
   return (
 
@@ -55,18 +80,34 @@ export const AppComponent = () => {
           <ListaCardsComponent
             showDialog={showDialog}
             GuardarUrlFotoDialog={GuardarUrlFotoDialog}
+            showDialogEditarEliminar={showDialogEditarEliminar}
+            guardarCodigoEliminar={guardarCodigoEliminar}
+            guardarUrlEliminar={guardarUrlEliminar}
           />
 
         </View>
       </ScrollView>
 
-      <ModalCrearEditarComponent visible={visible} onDismiss={hideModal} />
+      <ModalCrearEditarComponent visible={visible} onDismiss={hideModal} editar_Eliminar={editar_Eliminar} />
 
-      <BotonNuevoComponent onPress={showModal} />
+      <BotonNuevoComponent onPress={BotonCrear} />
 
       <Portal>
         <Dialog style={styles.contenedorFoto} visible={visibleD} onDismiss={hideDialog}>
-            <Card.Cover style={styles.foto} source={{ uri: `${urlFotoDialog}` }} />
+          <Card.Cover style={styles.foto} source={{ uri: `${urlFotoDialog}` }} />
+        </Dialog>
+      </Portal>
+
+      <Portal>
+        <Dialog visible={visibleEditarEliminar} onDismiss={hideDialogEditarEliminar}>
+          <Dialog.Title>Opciones</Dialog.Title>
+          <Dialog.Content>
+            <Paragraph style={{ fontSize: 16 }}>¿Qué desea realizar?</Paragraph>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button style={[styles.btnS, styles.btnSEliminar]} mode="contained" onPress={BotonEliminar}>Eliminar</Button>
+            <Button style={[styles.btnS, styles.btnSEditar]} mode="contained" onPress={BotonEditar}>Editar</Button>
+          </Dialog.Actions>
         </Dialog>
       </Portal>
 
@@ -106,7 +147,17 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 0,
     margin: 0
-  }
+  },
+  btnS: {
+    width: '35%',
+    marginHorizontal: '2.5%',
+  },
+  btnSEliminar: {
+    backgroundColor: '#e42b2b'
+  },
+  btnSEditar: {
+    backgroundColor: '#2663d4'
+  },
 
 });
 

@@ -12,10 +12,11 @@ import { CameraComponent } from './CameraComponent';
 interface Props {
     visible: boolean,
     onDismiss: () => void;
+    editar_Eliminar: any
 }
 
 
-export const ModalCrearEditarComponent = ({ visible, onDismiss }: Props) => {
+export const ModalCrearEditarComponent = ({ visible, onDismiss, editar_Eliminar }: Props) => {
 
     const containerStyle: any = {
         backgroundColor: 'white',
@@ -29,12 +30,37 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss }: Props) => {
     const showDialog = () => setVisible(true);
     const hideDialog = () => setVisible(false);
 
-    const {crearTabla, getReportes, addReporte, setDescripcion, setUrlFoto}: any = useContext(SQLiteContext);
+    const { crearTabla, getReportes, addReporte, setDescripcion, setUrlFoto, reportes, removeReporte, codigoStateModal, descripcionStateModal, urlFotoStateModal, codigoAuxiliar }: any = useContext(SQLiteContext);
 
     const enviarYCerrar = () => {
         onDismiss();
         addReporte();
     }
+
+    const [valueCodigo, guardarValueCodigo] = useState("");
+    const [valueDescripcion, guardarValueDescripcion] = useState("");
+
+    const valuesInputs = () => {
+
+        console.log(editar_Eliminar)
+
+        if (editar_Eliminar) {
+            guardarValueCodigo(codigoStateModal);
+            console.log("codigo", codigoStateModal);
+            guardarValueDescripcion(descripcionStateModal);
+            console.log("descrp ", descripcionStateModal);
+
+
+        } else {
+            guardarValueCodigo("");
+            guardarValueDescripcion("");
+        }
+    }
+
+    useEffect(() => {
+        valuesInputs();
+    })
+
 
     return (
 
@@ -47,6 +73,7 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss }: Props) => {
                         style={styles.textField}
                         mode="outlined"
                         placeholder="Por asignación automática"
+                        value={valueCodigo.toString()}
                         disabled={true}
                     />
                     <Text style={styles.titulosI}>Descripción:</Text>
@@ -56,6 +83,7 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss }: Props) => {
                         mode="outlined"
                         placeholder="Descripción del reporte..."
                         onChangeText={setDescripcion}
+                        value={valueDescripcion}
                     />
                 </View>
                 <View style={styles.containerFoto}>
@@ -68,11 +96,17 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss }: Props) => {
                         <Button style={[styles.btnS, styles.btnSCancelar]} mode="contained" onPress={onDismiss}>
                             Cancelar
                         </Button>
-                        <Button style={[styles.btnS, styles.btnSCrearEditar]} mode="contained" onPress={() => enviarYCerrar()}>
-                            Crear
-                        </Button>
-                    </View>
+                        {editar_Eliminar
+                            ? <Button style={[styles.btnS, styles.btnSCrearEditar]} mode="contained" onPress={() => enviarYCerrar()}>
+                                Editar
+                            </Button>
+                            :
+                            <Button style={[styles.btnS, styles.btnSCrearEditar]} mode="contained" onPress={() => enviarYCerrar()}>
+                                Crear
+                            </Button>
+                        }
 
+                    </View>
                 </View>
             </Modal>
 

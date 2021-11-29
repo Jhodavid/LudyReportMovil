@@ -1,25 +1,39 @@
-import React from 'react';
-import { StyleSheet, Text, useWindowDimensions, View, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useContext } from 'react';
+import { StyleSheet, Text, useWindowDimensions, View, ScrollView, TouchableOpacity, Touchable, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
 import { Avatar, Button, Card, Title, Paragraph, Portal, Modal, Provider, Dialog } from 'react-native-paper';
+import { SQLiteContext } from '../context/SQLiteContext';
 
 interface Props {
     codigo: number,
     descripcion: string,
     urlFoto: string,
-    showDialog: () => void
-    GuardarUrlFotoDialog: any
+    showDialog: () => void,
+    GuardarUrlFotoDialog: any,
+    showDialogEditarEliminar: any,
+    guardarCodigoEliminar: any,
+    guardarUrlEliminar: any,
 }
 
-
-
-export const CardReportesComponent = ({ codigo, descripcion, urlFoto, showDialog, GuardarUrlFotoDialog }: Props) => {
+export const CardReportesComponent = ({ codigo, descripcion, urlFoto, showDialog, GuardarUrlFotoDialog, showDialogEditarEliminar, guardarCodigoEliminar, guardarUrlEliminar }: Props) => {
 
     //DIMENSIONES DE PANTALLA (NO LO USO AÚN)
     const { width, height } = useWindowDimensions();
 
+    const { crearTabla, getReportes, addReporte, setDescripcion, setUrlFoto, reportes, removeReporte, guardarCodigoStateModal, guardarDescripcionStateModal, guardarUrlFotoStateModal }: any = useContext(SQLiteContext);
+
     const AsignarUrlFotoYMostrar = () => {
         GuardarUrlFotoDialog(urlFoto);
         showDialog();
+    }
+
+    const MostrasEditarEliminar = () => {
+        showDialogEditarEliminar();
+        guardarCodigoEliminar(codigo);
+        guardarUrlEliminar(urlFoto);
+
+        guardarCodigoStateModal(codigo);
+        guardarDescripcionStateModal(descripcion);
+        guardarUrlFotoStateModal(urlFoto);
     }
 
     return (
@@ -30,19 +44,21 @@ export const CardReportesComponent = ({ codigo, descripcion, urlFoto, showDialog
                         <Title>Reporte # {codigo}</Title>
 
                         <View style={styles.contenido}>
-                            <View style={styles.contenedorDescripcion}>
-                                <Text style={styles.tituloDescripcion}>Descripción:</Text>
-                                <ScrollView>
-                                    <Paragraph style={styles.parrafoDescripcion}>{descripcion}</Paragraph>
-                                </ScrollView>
-                            </View>
+                            <TouchableWithoutFeedback onLongPress={MostrasEditarEliminar}>
+                                <View style={styles.contenedorDescripcion}>
+                                    <Text style={styles.tituloDescripcion}>Descripción:</Text>
+                                    <ScrollView>
+                                        <Paragraph style={styles.parrafoDescripcion}>{descripcion}</Paragraph>
+                                    </ScrollView>
+                                </View>
+                            </TouchableWithoutFeedback>
 
                             <View style={styles.imagenBton} >
                                 <TouchableOpacity onPress={AsignarUrlFotoYMostrar}>
                                     <Card.Cover style={styles.imagen} source={{ uri: `${urlFoto}` }} />
                                 </TouchableOpacity>
                                 <View style={styles.botonEditar}>
-                                    <Button icon="circle-edit-outline" mode="contained" onPress={() => console.log('Pressed')}>
+                                    <Button icon="circle-edit-outline" mode="contained" onPress={MostrasEditarEliminar}>
 
                                     </Button>
                                 </View>
@@ -67,11 +83,13 @@ const styles = StyleSheet.create({
         paddingVertical: 2,
         paddingHorizontal: 3
     },
+
     contenedorDescripcion: {
         backgroundColor: '#6abff034',
         borderRadius: 10,
         width: '70%',
-        height: 220
+        // height: 220,
+        height: 'auto',
     },
     cardContent: {
         paddingHorizontal: 4,

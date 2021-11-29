@@ -1,8 +1,8 @@
 import React from 'react'
 
 import { View, StyleSheet } from 'react-native'
-import {RNCamera} from 'react-native-camera'
-import {useCamera} from 'react-native-camera-hooks'
+import { RNCamera } from 'react-native-camera'
+import { useCamera } from 'react-native-camera-hooks'
 import { Button } from 'react-native'
 
 interface Props {
@@ -10,17 +10,17 @@ interface Props {
     setUrlFoto: any;
 }
 
-export const CameraComponent = ({hideDialog, setUrlFoto}: Props) => {
+export const CameraComponent = ({ hideDialog, setUrlFoto }: Props) => {
 
-    const [{cameraRef},{takePicture}] = useCamera(undefined);
+    const [{ cameraRef }, { takePicture }] = useCamera(undefined);
 
     const CapturarYCerrarCamara = async () => {
         // console.log(cameraRef);
-        
+
         try {
             const data = await takePicture();
             hideDialog();
-            console.log(data.uri);
+            // console.log(data.uri);
             setUrlFoto(data.uri);
         } catch (error) {
             console.log(error);
@@ -34,17 +34,17 @@ export const CameraComponent = ({hideDialog, setUrlFoto}: Props) => {
                 type={RNCamera.Constants.Type.back}
                 style={styles.preview}
             >
-            <View
-                style={styles.bton}
-            >
-                <Button
-                    title="Capturar"
-                    color= '#1eb900'
-                    onPress={() => CapturarYCerrarCamara()}
-                />
-            </View>
-                
-                    
+                <View
+                    style={styles.bton}
+                >
+                    <Button
+                        title="Capturar"
+                        color='#1eb900'
+                        onPress={() => CapturarYCerrarCamara()}
+                    />
+                </View>
+
+
             </RNCamera>
         </View>
     )

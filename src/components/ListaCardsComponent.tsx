@@ -5,15 +5,18 @@ import { SQLiteContext } from '../context/SQLiteContext';
 import { CardReportesComponent } from './CardReportesComponent';
 
 interface Prods {
-    showDialog: () => void
-    GuardarUrlFotoDialog: any
+    showDialog: () => void,
+    GuardarUrlFotoDialog: any,
+    showDialogEditarEliminar: any,
+    guardarCodigoEliminar: any,
+    guardarUrlEliminar: any
 }
 
-export const ListaCardsComponent = ({showDialog, GuardarUrlFotoDialog}: Prods) => {
+export const ListaCardsComponent = ({ showDialog, GuardarUrlFotoDialog, showDialogEditarEliminar, guardarCodigoEliminar, guardarUrlEliminar }: Prods) => {
 
-    const {crearTabla, getReportes, addReporte, setDescripcion, setUrlFoto, reportes}: any = useContext(SQLiteContext);
+    const { crearTabla, getReportes, addReporte, setDescripcion, setUrlFoto, reportes }: any = useContext(SQLiteContext);
 
-    console.log(reportes);
+    // console.log(reportes);
 
     useEffect(() => {
         const effectReportes = async () => {
@@ -26,19 +29,22 @@ export const ListaCardsComponent = ({showDialog, GuardarUrlFotoDialog}: Prods) =
     return (
         <View>
 
-            {(reportes) 
-            ?
-            reportes.map((reporte: any) => (
-                <CardReportesComponent
-                  key={reporte.codigo}
-                  codigo={reporte.codigo}
-                  descripcion={reporte.descripcion}
-                  urlFoto={reporte.urlfoto}
-                  showDialog={showDialog}
-                  GuardarUrlFotoDialog={GuardarUrlFotoDialog}
-                />
-            ))
-            : null}
+            {reportes
+                ?
+                reportes.map((reporte: any) => (
+                    <CardReportesComponent
+                        key={reporte.codigo}
+                        codigo={reporte.codigo}
+                        descripcion={reporte.descripcion}
+                        urlFoto={reporte.urlfoto}
+                        showDialog={showDialog}
+                        GuardarUrlFotoDialog={GuardarUrlFotoDialog}
+                        showDialogEditarEliminar={showDialogEditarEliminar}
+                        guardarCodigoEliminar={guardarCodigoEliminar}
+                        guardarUrlEliminar={guardarUrlEliminar}
+                    />
+                ))
+                : null}
 
         </View>
     )
