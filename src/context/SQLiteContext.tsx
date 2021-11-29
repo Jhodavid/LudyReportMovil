@@ -17,15 +17,14 @@ const db = openDatabase({
 export const SQLiteProvider = (props: any) => {
 
   // STATE PASAR DATOS ENTRE MODALES
-  const [codigoStateModal, guardarCodigoStateModal] = useState("");
-  const [descripcionStateModal, guardarDescripcionStateModal] = useState("");
-  const [urlFotoStateModal, guardarUrlFotoStateModal] = useState("");
+  const [reporteStateModal, guardarReporteStateModal] = useState(null);
 
-
+  const [codigo, setCodigo] = useState(null);
   const [descripcion, setDescripcion] = useState("");
   const [urlFoto, setUrlFoto] = useState("");
 
   const [reportes, setReportes] = useState(null);
+
 
   const crearTabla = () => {
     db.transaction(txn => {
@@ -42,7 +41,7 @@ export const SQLiteProvider = (props: any) => {
     });
   };
 
-  const addReporte = () => {
+  const addReporte = (descripcion: string, urlFoto: string) => {
 
     db.transaction(txn => {
       txn.executeSql(
@@ -50,6 +49,7 @@ export const SQLiteProvider = (props: any) => {
         [descripcion, urlFoto],
         (sqlTxn, res) => {
           console.log(`Reporte agregado con exito ${descripcion} ${urlFoto}`);
+          console.log("url Foto " + urlFoto);
           getReportes();
           setDescripcion('');
           setUrlFoto('');
@@ -77,14 +77,7 @@ export const SQLiteProvider = (props: any) => {
               results.push({ codigo: item.codigo, descripcion: item.descripcion, urlfoto: item.urlfoto });
             }
             setReportes(results);
-
-            // console.log("reportes");
-
-            // reportes.forEach(reporte => {
-            //     console.log("Codigo: "+reporte.codigo+" Descripcion: "+reporte.descripcion+" urlFoto: "+reporte.urlfoto);
-            // });
           }
-          console.log("No hay nada");
         },
         error => {
           console.log("error on getting reportes " + error.message);
@@ -116,20 +109,23 @@ export const SQLiteProvider = (props: any) => {
     });
   }
 
-  // const updateData = async () => {
-  //   try {
-  //     db.transaction((tx) => {
-  //       tx.executeSql(
-  //         "UPDATE Users SET Name=?",
-  //         [name],
-  //         () => { Alert.alert('Success!', 'Your data has been updated.') },
-  //         error => { console.log(error) }
-  //       )
-  //     })
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
+  const updateReporte = (codigo: number, descripcion: string, urlfoto: string) => {
+    db.transaction(txn => {
+      txn.executeSql(
+        `UPDATE reportes SET descripcion='${descripcion}', urlfoto='${urlfoto}' WHERE codigo=${codigo}`,
+        [],
+        (sqlTxn, res) => {
+          console.log("reporte update successfully");
+          getReportes();
+
+        },
+        error => {
+          console.log("error on update reporte " + error.message);
+        },
+      );
+    });
+  }
+
 
   useEffect(() => {
     const effectReportes = async () => {
@@ -145,16 +141,15 @@ export const SQLiteProvider = (props: any) => {
         crearTabla,
         getReportes,
         addReporte,
+        updateReporte,
+        setCodigo,
         setDescripcion,
         setUrlFoto,
         reportes,
         removeReporte,
-        guardarCodigoStateModal,
-        guardarDescripcionStateModal,
-        guardarUrlFotoStateModal,
-        codigoStateModal,
-        descripcionStateModal,
-        urlFotoStateModal,
+
+        reporteStateModal,
+        guardarReporteStateModal,
       }}
     >
       {props.children}

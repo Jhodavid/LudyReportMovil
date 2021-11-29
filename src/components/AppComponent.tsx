@@ -105,7 +105,7 @@ export const AppComponent = () => {
             <Paragraph style={{ fontSize: 16 }}>¿Qué desea realizar?</Paragraph>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button style={[styles.btnS, styles.btnSEliminar]} mode="contained" onPress={BotonEliminar}>Eliminar</Button>
+            <Button style={[styles.btnS, styles.btnSEliminar]} mode="contained" onLongPress={BotonEliminar}>Eliminar</Button>
             <Button style={[styles.btnS, styles.btnSEditar]} mode="contained" onPress={BotonEditar}>Editar</Button>
           </Dialog.Actions>
         </Dialog>

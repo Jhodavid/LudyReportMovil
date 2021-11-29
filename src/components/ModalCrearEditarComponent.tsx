@@ -30,40 +30,23 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss, editar_Eliminar 
     const showDialog = () => setVisible(true);
     const hideDialog = () => setVisible(false);
 
-    const { crearTabla, getReportes, addReporte, setDescripcion, setUrlFoto, reportes, removeReporte, codigoStateModal, descripcionStateModal, urlFotoStateModal, codigoAuxiliar }: any = useContext(SQLiteContext);
+    const { addReporte, updateReporte, reporteStateModal }: any = useContext(SQLiteContext);
+
+    const [descripcion, setDescripcion] = useState("");
+    const [urlFoto, setUrlFoto] = useState("");
 
     const enviarYCerrar = () => {
         onDismiss();
-        addReporte();
+        addReporte(descripcion, urlFoto);
     }
 
-    const [valueCodigo, guardarValueCodigo] = useState("");
-    const [valueDescripcion, guardarValueDescripcion] = useState("");
-
-    const valuesInputs = () => {
-
-        console.log(editar_Eliminar)
-
-        if (editar_Eliminar) {
-            guardarValueCodigo(codigoStateModal);
-            console.log("codigo", codigoStateModal);
-            guardarValueDescripcion(descripcionStateModal);
-            console.log("descrp ", descripcionStateModal);
-
-
-        } else {
-            guardarValueCodigo("");
-            guardarValueDescripcion("");
-        }
+    const EditarYCerrar = () => {
+        // setDescripcion(reporteStateModal.descripcion)
+        updateReporte(reporteStateModal.codigo, descripcion, urlFoto);
+        onDismiss();
     }
-
-    useEffect(() => {
-        valuesInputs();
-    })
-
 
     return (
-
         <Portal>
             <Modal visible={visible} onDismiss={onDismiss} contentContainerStyle={containerStyle}>
                 <Text style={styles.titulo}>Nuevo Reporte</Text>
@@ -73,7 +56,7 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss, editar_Eliminar 
                         style={styles.textField}
                         mode="outlined"
                         placeholder="Por asignación automática"
-                        value={valueCodigo.toString()}
+                        value={editar_Eliminar ? reporteStateModal.codigo.toString() : ""}
                         disabled={true}
                     />
                     <Text style={styles.titulosI}>Descripción:</Text>
@@ -83,7 +66,7 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss, editar_Eliminar 
                         mode="outlined"
                         placeholder="Descripción del reporte..."
                         onChangeText={setDescripcion}
-                        value={valueDescripcion}
+                        value={editar_Eliminar ? reporteStateModal.descripcion : null}
                     />
                 </View>
                 <View style={styles.containerFoto}>
@@ -97,7 +80,7 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss, editar_Eliminar 
                             Cancelar
                         </Button>
                         {editar_Eliminar
-                            ? <Button style={[styles.btnS, styles.btnSCrearEditar]} mode="contained" onPress={() => enviarYCerrar()}>
+                            ? <Button style={[styles.btnS, styles.btnSCrearEditar]} mode="contained" onPress={() => EditarYCerrar()}>
                                 Editar
                             </Button>
                             :
@@ -105,7 +88,6 @@ export const ModalCrearEditarComponent = ({ visible, onDismiss, editar_Eliminar 
                                 Crear
                             </Button>
                         }
-
                     </View>
                 </View>
             </Modal>

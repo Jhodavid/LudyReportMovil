@@ -4,9 +4,7 @@ import { Avatar, Button, Card, Title, Paragraph, Portal, Modal, Provider, Dialog
 import { SQLiteContext } from '../context/SQLiteContext';
 
 interface Props {
-    codigo: number,
-    descripcion: string,
-    urlFoto: string,
+    reporte: any;
     showDialog: () => void,
     GuardarUrlFotoDialog: any,
     showDialogEditarEliminar: any,
@@ -14,26 +12,28 @@ interface Props {
     guardarUrlEliminar: any,
 }
 
-export const CardReportesComponent = ({ codigo, descripcion, urlFoto, showDialog, GuardarUrlFotoDialog, showDialogEditarEliminar, guardarCodigoEliminar, guardarUrlEliminar }: Props) => {
+export const CardReportesComponent = ({ reporte, showDialog, GuardarUrlFotoDialog, showDialogEditarEliminar, guardarCodigoEliminar, guardarUrlEliminar }: Props) => {
 
     //DIMENSIONES DE PANTALLA (NO LO USO AÚN)
     const { width, height } = useWindowDimensions();
 
-    const { crearTabla, getReportes, addReporte, setDescripcion, setUrlFoto, reportes, removeReporte, guardarCodigoStateModal, guardarDescripcionStateModal, guardarUrlFotoStateModal }: any = useContext(SQLiteContext);
+    const { guardarReporteStateModal }: any = useContext(SQLiteContext);
 
     const AsignarUrlFotoYMostrar = () => {
-        GuardarUrlFotoDialog(urlFoto);
+        GuardarUrlFotoDialog(reporte.urlfoto);
         showDialog();
     }
 
     const MostrasEditarEliminar = () => {
         showDialogEditarEliminar();
-        guardarCodigoEliminar(codigo);
-        guardarUrlEliminar(urlFoto);
+        guardarCodigoEliminar(reporte.codigo);
+        guardarUrlEliminar(reporte.urlfoto);
 
-        guardarCodigoStateModal(codigo);
-        guardarDescripcionStateModal(descripcion);
-        guardarUrlFotoStateModal(urlFoto);
+        guardarReporteStateModal({
+            codigo: reporte.codigo,
+            descripcion: reporte.descripcion,
+            urlfoto: reporte.urlfoto
+        });
     }
 
     return (
@@ -41,21 +41,21 @@ export const CardReportesComponent = ({ codigo, descripcion, urlFoto, showDialog
             <Provider>
                 <Card style={{ marginTop: 6 }}>
                     <Card.Content style={styles.cardContent}>
-                        <Title>Reporte # {codigo}</Title>
+                        <Title>Reporte # {reporte.codigo}</Title>
 
                         <View style={styles.contenido}>
                             <TouchableWithoutFeedback onLongPress={MostrasEditarEliminar}>
                                 <View style={styles.contenedorDescripcion}>
                                     <Text style={styles.tituloDescripcion}>Descripción:</Text>
                                     <ScrollView>
-                                        <Paragraph style={styles.parrafoDescripcion}>{descripcion}</Paragraph>
+                                        <Paragraph style={styles.parrafoDescripcion}>{reporte.descripcion}</Paragraph>
                                     </ScrollView>
                                 </View>
                             </TouchableWithoutFeedback>
 
                             <View style={styles.imagenBton} >
                                 <TouchableOpacity onPress={AsignarUrlFotoYMostrar}>
-                                    <Card.Cover style={styles.imagen} source={{ uri: `${urlFoto}` }} />
+                                    <Card.Cover style={styles.imagen} source={{ uri: `${reporte.urlfoto}` }} />
                                 </TouchableOpacity>
                                 <View style={styles.botonEditar}>
                                     <Button icon="circle-edit-outline" mode="contained" onPress={MostrasEditarEliminar}>

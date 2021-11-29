@@ -14,7 +14,7 @@ interface Prods {
 
 export const ListaCardsComponent = ({ showDialog, GuardarUrlFotoDialog, showDialogEditarEliminar, guardarCodigoEliminar, guardarUrlEliminar }: Prods) => {
 
-    const { crearTabla, getReportes, addReporte, setDescripcion, setUrlFoto, reportes }: any = useContext(SQLiteContext);
+    const { crearTabla, getReportes, reportes }: any = useContext(SQLiteContext);
 
     // console.log(reportes);
 
@@ -34,9 +34,7 @@ export const ListaCardsComponent = ({ showDialog, GuardarUrlFotoDialog, showDial
                 reportes.map((reporte: any) => (
                     <CardReportesComponent
                         key={reporte.codigo}
-                        codigo={reporte.codigo}
-                        descripcion={reporte.descripcion}
-                        urlFoto={reporte.urlfoto}
+                        reporte={reporte}
                         showDialog={showDialog}
                         GuardarUrlFotoDialog={GuardarUrlFotoDialog}
                         showDialogEditarEliminar={showDialogEditarEliminar}
